@@ -77,6 +77,28 @@ func NewGroup(signatures ...*Signature) (*Group, error) {
 	}, nil
 }
 
+// NewGroup creates a new group of tasks to be processed in parallel
+func NewGroupWithUUID(UUID string, signatures ...*Signature) (*Group, error) {
+	// Generate a group UUID
+	groupUUID := UUID
+	groupID := fmt.Sprintf("group_%v", groupUUID)
+
+	// Auto generate task UUIDs if needed, group tasks by common group UUID
+	for _, signature := range signatures {
+		if signature.UUID == "" {
+			signatureID := uuid.New().String()
+			signature.UUID = fmt.Sprintf("task_%v", signatureID)
+		}
+		signature.GroupUUID = groupID
+		signature.GroupTaskCount = len(signatures)
+	}
+
+	return &Group{
+		GroupUUID: groupID,
+		Tasks:     signatures,
+	}, nil
+}
+
 // NewChord creates a new chord (a group of tasks with a single callback
 // to be executed after all tasks in the group has completed)
 func NewChord(group *Group, callback *Signature) (*Chord, error) {

@@ -210,7 +210,10 @@ func (server *Server) SendChain(chain *tasks.Chain) (*result.ChainAsyncResult, e
 func (server *Server) SendGroupWithContext(ctx context.Context, group *tasks.Group, sendConcurrency int) ([]*result.AsyncResult, error) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "SendGroup", tracing.ProducerOption(), tracing.MachineryTag, tracing.WorkflowGroupTag)
 	defer span.Finish()
-
+	// TODO 填充GroupUUID
+	for _, signature := range group.Tasks {
+		signature.GroupUUID = group.GroupUUID
+	}
 	tracing.AnnotateSpanWithGroupInfo(span, group, sendConcurrency)
 
 	// Make sure result backend is defined

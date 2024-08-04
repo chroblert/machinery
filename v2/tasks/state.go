@@ -20,6 +20,7 @@ const (
 // TaskState represents a state of a task
 type TaskState struct {
 	TaskUUID  string        `bson:"_id"`
+	GroupUUID string        `bson:"group_uuid"`
 	TaskName  string        `bson:"task_name"`
 	State     string        `bson:"state"`
 	Results   []*TaskResult `bson:"results"`
@@ -44,6 +45,7 @@ type GroupMeta struct {
 func NewPendingTaskState(signature *Signature) *TaskState {
 	return &TaskState{
 		TaskUUID:  signature.UUID,
+		GroupUUID: signature.GroupUUID,
 		TaskName:  signature.Name,
 		State:     StatePending,
 		CreatedAt: time.Now().UTC(),
@@ -53,42 +55,47 @@ func NewPendingTaskState(signature *Signature) *TaskState {
 // NewReceivedTaskState ...
 func NewReceivedTaskState(signature *Signature) *TaskState {
 	return &TaskState{
-		TaskUUID: signature.UUID,
-		State:    StateReceived,
+		TaskUUID:  signature.UUID,
+		GroupUUID: signature.GroupUUID,
+		State:     StateReceived,
 	}
 }
 
 // NewStartedTaskState ...
 func NewStartedTaskState(signature *Signature) *TaskState {
 	return &TaskState{
-		TaskUUID: signature.UUID,
-		State:    StateStarted,
+		TaskUUID:  signature.UUID,
+		GroupUUID: signature.GroupUUID,
+		State:     StateStarted,
 	}
 }
 
 // NewSuccessTaskState ...
 func NewSuccessTaskState(signature *Signature, results []*TaskResult) *TaskState {
 	return &TaskState{
-		TaskUUID: signature.UUID,
-		State:    StateSuccess,
-		Results:  results,
+		TaskUUID:  signature.UUID,
+		GroupUUID: signature.GroupUUID,
+		State:     StateSuccess,
+		Results:   results,
 	}
 }
 
 // NewFailureTaskState ...
 func NewFailureTaskState(signature *Signature, err string) *TaskState {
 	return &TaskState{
-		TaskUUID: signature.UUID,
-		State:    StateFailure,
-		Error:    err,
+		TaskUUID:  signature.UUID,
+		GroupUUID: signature.GroupUUID,
+		State:     StateFailure,
+		Error:     err,
 	}
 }
 
 // NewRetryTaskState ...
 func NewRetryTaskState(signature *Signature) *TaskState {
 	return &TaskState{
-		TaskUUID: signature.UUID,
-		State:    StateRetry,
+		TaskUUID:  signature.UUID,
+		GroupUUID: signature.GroupUUID,
+		State:     StateRetry,
 	}
 }
 
